@@ -1,0 +1,13 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsc && node ."
+  },
+  "dependencies": {
+    "socket.io": "^4.5.2",
+    "typescript": "^4.8.3"
+  }
+}
