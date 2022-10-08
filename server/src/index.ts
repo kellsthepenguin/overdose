@@ -1,11 +1,14 @@
 import { Server as IOServer } from 'socket.io'
 import { createServer as createHttpServer } from 'http'
+import express from 'express'
 
-const httpServer = createHttpServer()
-const io = new IOServer(httpServer)
+const app = express()
+const server = createHttpServer(app)
+const io = new IOServer(server)
 
 io.on('connection', (socket) => {
   const { token, publicKey } = socket.handshake.query
 
   // idk
 })
+ 
