@@ -4,8 +4,8 @@ import { render } from 'react-dom'
 import Topbar from '../components/Topbar'
 
 export default function Captcha() {
-  const handleVerificationSuccess = (token: string, ekey: string) => {
-    setTimeout(() => render(<New token={token} ekey={ekey} />, document.getElementById('root') as HTMLElement), 1000)
+  const handleVerificationSuccess = (token: string) => {
+    setTimeout(() => render(<New token={token} />, document.getElementById('root') as HTMLElement), 1000)
   }
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function Captcha() {
   )
 }
 
-function New ({ token, ekey }: { token: string, ekey: string }) {
+function New ({ token }: { token: string }) {
   return (
     <div>
       <Topbar />
