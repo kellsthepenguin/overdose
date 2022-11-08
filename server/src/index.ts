@@ -9,13 +9,13 @@ import api from './api'
 const app = express()
 const server = createHttpServer(app)
 const io = new IOServer(server)
-/*
+
 app.use(express.static(path.join(__dirname, '../../dist/assets')))
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../dist/index.html'))
 })
-*/
+
 app.use('/api/', api)
 
 io.on('connection', (socket) => {
