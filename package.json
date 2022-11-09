@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --exec \"cd ./server/ && ts-node .\"",
+    "dev": "nodemon --exec \"yarn build && cd ./server/ && ts-node .\"",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
