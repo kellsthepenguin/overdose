@@ -17,16 +17,27 @@ export default function Captcha() {
   return (
     <div>
       <Topbar />
-      { /* className='' 가운데 정렬 알아서 */ }
-      <HCaptcha
-        sitekey='69a2045d-3b8e-408d-b9f4-d034d5858703'
-        onVerify={handleVerificationSuccess}
-      />
+      <div className='-translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2 absolute'>
+        <HCaptcha
+          sitekey='69a2045d-3b8e-408d-b9f4-d034d5858703'
+          onVerify={handleVerificationSuccess}
+        />
+      </div>
     </div>
   )
 }
 
 function New ({ token }: { token: string }) {
+  useEffect(() => {
+    fetch('/api/new', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ captcha: token })
+    }).then((res) => res.json()).then(console.log)
+  })
+
   return (
     <div>
       <Topbar />
