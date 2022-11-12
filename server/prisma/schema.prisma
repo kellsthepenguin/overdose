@@ -11,6 +11,7 @@ datasource db {
 }
 
 model User {
+  idx  Int    @unique @default(autoincrement())
   key  String @unique
   name String
 }
