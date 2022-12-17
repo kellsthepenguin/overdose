@@ -30,7 +30,7 @@ router.post('/new', async (req, res) => {
 
     prisma.user.create({
       data: {
-        key: type === 'cr' ? generateString(30) : generateSlug(5),
+        key: type === 'cr' ? generateString(30) : generateSlug(5, { format: 'title' }).replaceAll(' ', ''),
         name
       }
     }).then((user) => {
