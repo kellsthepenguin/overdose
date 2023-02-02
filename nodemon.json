@@ -1,5 +1,0 @@
-{
-  "watch": ["./src/", "./server/"],
-  "ext": "*",
-  "exec": "cd ./server/ && ts-node ."
-}
