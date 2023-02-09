@@ -12,7 +12,7 @@ export default async function handler(
   const salt = nanoid(36)
 
   if (id && pw && name) {
-    prisma.user.create({
+    await prisma.user.create({
       data: {
         id,
         pw: sha256(pw + salt),
