@@ -15,7 +15,7 @@ export default function Home() {
           <div>
             <p className='font-xl'>당신의 대화는 보호받아야 하니까.</p>
             <p className='text-5xl font-bold font-mono pb-2'>Overdose.</p>
-            <PrimaryButton href='/new'>
+            <PrimaryButton onClick={() => location.href = '/register'}>
               시작하기 &nbsp; 
               <FontAwesomeIcon icon={faChevronRight} />
             </PrimaryButton>
