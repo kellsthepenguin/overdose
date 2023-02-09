@@ -8,10 +8,21 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id, pw, name } = req.body
+  const { id, pw, name }: {
+    id: string,
+    pw: string,
+    name: string
+  } = req.body
   const salt = nanoid(36)
 
   if (id && pw && name) {
+    const idRegexp = /^\w+$/
+    const pwRegexp = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/
+
+    if (!id.match(idRegexp) || !pw.match(pwRegexp)) {
+      return res.json({ ok: false, error: 'invalid id or pw' })
+    }
+
     await prisma.user.create({
       data: {
         id,
@@ -20,7 +31,10 @@ export default async function handler(
         name
       }
     }).then(() => res.json({ ok: true }))
-      .catch(() => res.json({ ok: false, error: 'db error' }))
+      .catch((err) => {
+        console.log(err)
+        res.json({ ok: false, error: 'db error' })
+      })
   } else {
     res.json({ ok: false, error: 'invalid body' })
   }
