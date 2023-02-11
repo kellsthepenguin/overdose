@@ -16,9 +16,10 @@ export default function Login() {
       method: 'POST',
       body: JSON.stringify({ id, pw }),
       headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((res) => res.json())
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
       .then((result) => {
         if (result.ok === true) {
           alert('성공적으로 로그인하였습니다.')
@@ -34,11 +35,16 @@ export default function Login() {
     <div>
       <Topbar />
       <Center>
-        <div className='px-[16vw] py-[calc(24vh-64px)] bg-slate-100 rounded-md'>
+        <div className='px-[8vw] sm:px-[16vw] py-[calc(24vh-64px)] bg-slate-100 rounded-md'>
           <p>아이디</p>
           <Input innerRef={idRef} placeholder='dandelions' type='text' />
           <p>비밀번호</p>
-          <Input className='mb-2' innerRef={pwRef} placeholder='PaSs!w$0%^d&' type='password' /> 
+          <Input
+            className='mb-2'
+            innerRef={pwRef}
+            placeholder='PaSs!w$0%^d&'
+            type='password'
+          />
           <PrimaryButton onClick={handleLogin}>로그인</PrimaryButton>
         </div>
       </Center>

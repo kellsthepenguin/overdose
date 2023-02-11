@@ -18,9 +18,10 @@ export default function Register() {
       method: 'POST',
       body: JSON.stringify({ name, id, pw }),
       headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((res) => res.json())
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
       .then((result) => {
         if (result.ok === true) {
           alert('성공적으로 계정을 생성하였습니다!')
@@ -34,13 +35,18 @@ export default function Register() {
     <div>
       <Topbar />
       <Center>
-        <div className='px-[16vw] py-[calc(24vh-64px)] bg-slate-100 rounded-md'>
+        <div className='px-[8vw] sm:px-[16vw] py-[calc(24vh-64px)] bg-slate-100 rounded-md'>
           <p>이름</p>
           <Input innerRef={nameRef} placeholder='John Doe' type='text' />
           <p>아이디</p>
           <Input innerRef={idRef} placeholder='dandelions' type='text' />
           <p>비밀번호</p>
-          <Input className='mb-2' innerRef={pwRef} placeholder='PaSs!w$0%^d&' type='password' /> 
+          <Input
+            className='mb-2'
+            innerRef={pwRef}
+            placeholder='PaSs!w$0%^d&'
+            type='password'
+          />
           <PrimaryButton onClick={handleRegister}>회원가입</PrimaryButton>
         </div>
       </Center>
