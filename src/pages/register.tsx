@@ -3,6 +3,7 @@ import Input from '@/components/Input'
 import PrimaryButton from '@/components/PrimaryButton'
 import Topbar from '@/components/TopBar'
 import { useRef } from 'react'
+import eccrypto from 'eccrypto'
 
 export default function Register() {
   const nameRef = useRef<HTMLInputElement>(null)
@@ -14,9 +15,14 @@ export default function Register() {
     const id = idRef.current?.value
     const pw = pwRef.current?.value
 
+    const privateKey = eccrypto.generatePrivate()
+    const publicKey = eccrypto.getPublic(privateKey)
+    const encodedPrivateKey = privateKey.toString('base64')
+    const encodedPublicKey = publicKey.toString('base64')
+
     fetch('/api/register', {
       method: 'POST',
-      body: JSON.stringify({ name, id, pw }),
+      body: JSON.stringify({ name, id, pw, encodedPublicKey }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -24,6 +30,7 @@ export default function Register() {
       .then((res) => res.json())
       .then((result) => {
         if (result.ok === true) {
+          localStorage.setItem('encodedPrivateKey', encodedPrivateKey)
           alert('성공적으로 계정을 생성하였습니다!')
         } else {
           alert('계정 생성에 실패했습니다. 오류: ' + result.error)

@@ -11,8 +11,9 @@ datasource db {
 }
 
 model User {
-  id   String @unique
-  pw   String @unique
-  salt String
-  name String
+  id               String @unique
+  pw               String @unique
+  salt             String
+  name             String
+  encodedPublicKey String
 }

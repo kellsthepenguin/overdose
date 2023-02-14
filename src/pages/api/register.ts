@@ -12,10 +12,12 @@ export default async function handler(
     id,
     pw,
     name,
+    encodedPublicKey,
   }: {
     id: string
     pw: string
     name: string
+    encodedPublicKey: string
   } = req.body
   const salt = nanoid(36)
 
@@ -34,6 +36,7 @@ export default async function handler(
           pw: sha256(pw + salt),
           salt,
           name,
+          encodedPublicKey,
         },
       })
       .then(() => res.json({ ok: true }))
