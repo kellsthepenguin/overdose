@@ -8,9 +8,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id, pw, name }: {
-    id: string,
-    pw: string,
+  const {
+    id,
+    pw,
+    name,
+  }: {
+    id: string
+    pw: string
     name: string
   } = req.body
   const salt = nanoid(36)
@@ -23,16 +27,17 @@ export default async function handler(
       return res.json({ ok: false, error: 'invalid id or pw' })
     }
 
-    await prisma.user.create({
-      data: {
-        id,
-        pw: sha256(pw + salt),
-        salt,
-        name
-      }
-    }).then(() => res.json({ ok: true }))
-      .catch((err) => {
-        console.log(err)
+    await prisma.user
+      .create({
+        data: {
+          id,
+          pw: sha256(pw + salt),
+          salt,
+          name,
+        },
+      })
+      .then(() => res.json({ ok: true }))
+      .catch(() => {
         res.json({ ok: false, error: 'db error' })
       })
   } else {

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -22,7 +22,7 @@
   "ts-node": {
     "transpileOnly": true,
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "CommonJS"
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
