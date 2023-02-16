@@ -11,9 +11,19 @@ datasource db {
 }
 
 model User {
-  id               String @unique
-  pw               String @unique
+  id               String      @unique
+  pw               String
   salt             String
   name             String
   encodedPublicKey String
+  firsts           Relations[] @relation("first")
+  seconds          Relations[] @relation("second")
+}
+
+model Relations {
+  id       Int    @unique @default(autoincrement())
+  firstId  String @unique
+  first    User   @relation("first", fields: [firstId], references: [id])
+  secondId String @unique
+  second   User   @relation("second", fields: [secondId], references: [id])
 }
