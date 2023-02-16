@@ -19,7 +19,7 @@ export default async function handler(
     name: string
     encodedPublicKey: string
   } = req.body
-  const salt = nanoid(36)
+  const salt = nanoid(128)
 
   if (id && pw && name) {
     const idRegexp = /^\w+$/
