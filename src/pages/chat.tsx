@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import ChatInput from '@/components/ChatInput'
+import { Buffer } from 'buffer'
 
 const fetcher = (url: string, body: any) =>
   fetch(url, {
@@ -25,6 +26,7 @@ export default function Chat() {
   const [currentChatProfileElement, setCurrentChatProfileElement] =
     useState<HTMLDivElement | null>(null)
   const [isOpened, setIsOpened] = useState(true)
+  const [publicKey, setPublicKey] = useState<Buffer | null>(null)
 
   if (typeof window !== 'undefined') {
     // fix safari 100vh problem
@@ -53,6 +55,12 @@ export default function Chat() {
     currentChatProfileElement?.classList.remove('bg-gray-100')
     profileElem?.classList.add('bg-gray-100')
     setCurrentChatProfileElement(profileElem as HTMLDivElement)
+    fetch('/api/users/' + currentChatId)
+      .then((res) => res.json())
+      .then(({ encodedPublicKey }) => {
+        if (!encodedPublicKey) return
+        setPublicKey(Buffer.from(encodedPublicKey, 'base64'))
+      })
   }, [currentChatId])
 
   if (error) {
