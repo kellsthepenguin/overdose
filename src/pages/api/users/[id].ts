@@ -13,7 +13,7 @@ export default async function handler(
   })) as any
 
   if (!user) {
-    res.json({ ok: false, error: "user dosen't exists" })
+    res.json({ ok: false, error: "user doesn't exists" })
     return
   }
 
