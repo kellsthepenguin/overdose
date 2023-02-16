@@ -2,14 +2,10 @@ import ChatProfile from '@/components/ChatProfile'
 import Topbar from '@/components/TopBar'
 import Bubble from '@/components/Bubble'
 import useSWR from 'swr'
-import Input from '@/components/Input'
 import { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faArrowLeft,
-  faPaperPlane,
-  faUserGroup,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import ChatInput from '@/components/ChatInput'
 
 const fetcher = (url: string, body: any) =>
   fetch(url, {
@@ -100,20 +96,7 @@ export default function Chat() {
           />
         </div>
         <div className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'>
-          <div className='p-5 flex gap-2 items-center w-full'>
-            <Input
-              placeholder='Send chat to John Doe(johndoe123)'
-              type='text'
-              className='relative w-full inline'
-            />
-            <div className='max-sm:mx-[5%]'>
-              <FontAwesomeIcon
-                icon={faPaperPlane}
-                className='w-[25px] h-[25px] sm:hidden'
-                color='#3b82f6'
-              />
-            </div>
-          </div>
+          <ChatInput name='John Doe' id='johndoe123' />
           <Bubble date='오전 7:21' name='John Doe' text='Hello World!' />
           <div
             className={`absolute bottom-[calc(var(--vh)-95px)] left-4 sm:hidden ${
