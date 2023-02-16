@@ -14,10 +14,11 @@ export default async function handler(
 
   if (!user) {
     res.json({ ok: false, error: "user dosen't exists" })
+    return
   }
 
   delete user.pw
   delete user.salt
 
-  res.json(user)
+  res.json({ ok: true, user })
 }
