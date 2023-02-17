@@ -23,7 +23,11 @@ export default async function handler(
         second: true,
       },
     })
-    const seconds = relations.map((relation) => relation.second)
+    const seconds = relations.map((relation) => {
+      const rel = relation as any
+      delete rel.pw
+      delete rel.salt
+    })
 
     res.json({ ok: true, seconds })
   } else if (req.method === 'POST') {
