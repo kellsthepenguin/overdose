@@ -1,3 +1,6 @@
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 export default function ChatProfile({
   name,
   recentChat,
@@ -15,11 +18,11 @@ export default function ChatProfile({
       onClick={onClick}
       data-id={id}
     >
-      <div className='flex flex-col gap-2'>
+      <div className='flex flex-row py-2 px-1 gap-3 items-center'>
+        <FontAwesomeIcon icon={faCircleUser} size='2x' />
         <span className='font-bold text-lg'>
           {name} <span className='font-normal text-base'>({id})</span>
         </span>
-        <p className='text-slate-400'>{recentChat}</p>
       </div>
     </div>
   )
