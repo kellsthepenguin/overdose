@@ -13,8 +13,8 @@ export default async function handler(
   const { id, pw } = req.body
   const user = await prisma.user.findUnique({
     where: {
-      id
-    }
+      id,
+    },
   })
 
   if (user?.pw === sha256(pw + user?.salt)) {
