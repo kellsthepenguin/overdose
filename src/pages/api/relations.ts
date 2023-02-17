@@ -19,10 +19,13 @@ export default async function handler(
       where: {
         firstId: id,
       },
+      include: {
+        second: true,
+      },
     })
-    const secondIds = relations.map((relation) => relation.secondId)
+    const seconds = relations.map((relation) => relation.second)
 
-    res.json({ ok: true, secondIds })
+    res.json({ ok: true, seconds })
   } else if (req.method === 'POST') {
     const { secondId } = req.body
     const second = await prisma.user.findUnique({
