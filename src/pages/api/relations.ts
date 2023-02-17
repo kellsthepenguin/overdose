@@ -24,7 +24,7 @@ export default async function handler(
       },
     })
     const seconds = relations.map((relation) => {
-      const rel = relation as any
+      const rel = relation.second as any
       delete rel.pw
       delete rel.salt
     })
