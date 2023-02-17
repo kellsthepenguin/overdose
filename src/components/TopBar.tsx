@@ -4,13 +4,17 @@ export default function Topbar() {
       <nav className='px-4 flex justify-between bg-white h-16 border-b-2'>
         <ul className='flex items-center'>
           <li>
-            <a className='font-bold font-mono' href='/'>Overdose</a>
+            <a className='font-bold font-mono' href='/'>
+              Overdose
+            </a>
           </li>
         </ul>
-  
+
         <ul className='flex items-center'>
           <li>
-            <a className='text-blue-500 font-bold' href='/login'>로그인</a>
+            <a className='text-blue-500 font-bold' href='/login'>
+              로그인
+            </a>
           </li>
         </ul>
       </nav>
