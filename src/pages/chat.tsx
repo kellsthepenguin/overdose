@@ -8,35 +8,59 @@ import { faArrowLeft, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import ChatInput from '@/components/ChatInput'
 import { Buffer } from 'buffer'
 
-const fetcher = (url: string, body: any) =>
+interface User {
+  id: string
+  name: string
+  encodedPublicKey: string
+}
+
+const fetcher = (url: string, token: string) =>
   fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(body),
     headers: {
+      Authorization: token,
       'Content-Type': 'application/json',
     },
   }).then((res) => res.json())
 
 export default function Chat() {
-  const { data, error, isLoading } = useSWR('/api/verify', (url) =>
-    fetcher(url, { token: localStorage.getItem('token') })
+  const { data, error, isLoading } = useSWR('/api/relations', (url) =>
+    fetcher(url, localStorage.getItem('token')!)
   )
+
+  if (error) {
+    console.log(error)
+    alert('오류가 발생했습니다.')
+    location.href = '/'
+  }
+
+  if (isLoading) return '로딩..'
+
+  if (!data.ok) {
+    alert('만료된 토큰입니다.')
+    location.href = '/'
+  }
+
+  return <AfterEarlyReturn data={data} />
+}
+
+const AfterEarlyReturn = ({ data }: { data: any }) => {
   const isFirstRender = useRef(true)
   const [currentChatId, setCurrentChatId] = useState<string | null>(null)
   const [currentChatProfileElement, setCurrentChatProfileElement] =
     useState<HTMLDivElement | null>(null)
   const [isOpened, setIsOpened] = useState(true)
   const [publicKey, setPublicKey] = useState<Buffer | null>(null)
+  const chatProfiles: JSX.Element[] = []
 
   if (typeof window !== 'undefined') {
-    // fix safari 100vh problem
-    const setAppHeight = () => {
-      const doc = document.documentElement
-      doc.style.setProperty('--vh', `${window.innerHeight}px`)
+    const setVh = () => {
+      document.documentElement.style.setProperty(
+        '--vh',
+        `${window.innerHeight}px`
+      )
     }
-
-    window.addEventListener('resize', setAppHeight)
-    setAppHeight()
+    window.addEventListener('resize', setVh)
+    setVh()
   }
 
   useEffect(() => {
@@ -45,6 +69,7 @@ export default function Chat() {
       return
     }
 
+    const friends = data.seconds as User[]
     const childrens = Array.from(
       document.getElementsByClassName('chat-profile')
     )
@@ -55,27 +80,26 @@ export default function Chat() {
     currentChatProfileElement?.classList.remove('bg-gray-100')
     profileElem?.classList.add('bg-gray-100')
     setCurrentChatProfileElement(profileElem as HTMLDivElement)
-    fetch('/api/users/' + currentChatId)
-      .then((res) => res.json())
-      .then(({ encodedPublicKey }) => {
-        if (!encodedPublicKey) return
-        setPublicKey(Buffer.from(encodedPublicKey, 'base64'))
-      })
+    const friend = friends.find((user) => user.id === currentChatId)!
+    if (friend === undefined) return
+    setPublicKey(Buffer.from(friend.encodedPublicKey, 'base64'))
   }, [currentChatId])
 
-  if (error) {
-    console.log(error)
-    return '오류가 발생했습니다.'
-  }
-  if (isLoading) return '로딩..'
-  if (!data.valid) {
-    alert('만료된 토큰입니다.')
-    location.href = '/'
-    return
-  }
+  const friends = data.seconds as User[]
+
+  friends.forEach((user) => {
+    chatProfiles.push(
+      <ChatProfile
+        name={user.name}
+        id={user.id}
+        onClick={() => setCurrentChatId(user.id)}
+        key={user.id}
+      />
+    )
+  })
 
   return (
-    <>
+    <div>
       <Topbar />
       <div className='flex'>
         <div
@@ -90,18 +114,7 @@ export default function Chat() {
               onClick={() => setIsOpened(false)}
             />
           </div>
-          <ChatProfile
-            name='John Doe'
-            recentChat='Hello world!'
-            id='johndoe123'
-            onClick={() => setCurrentChatId('johndoe123')}
-          />
-          <ChatProfile
-            name='John Doe'
-            recentChat='Hello world!'
-            id='johndoe1234'
-            onClick={() => setCurrentChatId('johndoe1234')}
-          />
+          {chatProfiles}
         </div>
         <div className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'>
           <ChatInput name='John Doe' id='johndoe123' />
@@ -116,6 +129,6 @@ export default function Chat() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
