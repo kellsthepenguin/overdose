@@ -22,7 +22,7 @@ export default async function handler(
     })
     const secondIds = relations.map((relation) => relation.secondId)
 
-    res.json(secondIds)
+    res.json({ ok: true, secondIds })
   } else if (req.method === 'POST') {
     const { secondId } = req.body
     const second = await prisma.user.findUnique({
