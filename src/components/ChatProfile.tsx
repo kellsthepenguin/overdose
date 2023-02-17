@@ -3,12 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function ChatProfile({
   name,
-  recentChat,
   id,
   onClick,
 }: {
   name: string
-  recentChat: string
   id: string
   onClick: () => void
 }) {
