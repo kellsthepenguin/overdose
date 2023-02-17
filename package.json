@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "ts-node .",
-    "build": "next build",
+    "build": "next build && yarn genkey",
     "start": "NODE_ENV=production ts-node .",
     "genkey": "node -e \"import('nanoid').then(({ nanoid }) => require('fs').writeFileSync('private.key', nanoid(2048)))\""
   },
