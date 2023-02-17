@@ -24,9 +24,10 @@ export default async function handler(
       },
     })
     const seconds = relations.map((relation) => {
-      const rel = relation.second as any
-      delete rel.pw
-      delete rel.salt
+      const second = relation.second as any
+      delete second.pw
+      delete second.salt
+      return second
     })
 
     res.json({ ok: true, seconds })
