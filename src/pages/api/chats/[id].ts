@@ -20,6 +20,13 @@ export default async function handler(
       where: {
         OR: [{ authorId: targetId }, { receiverId: targetId }],
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
     })
 
     res.json(chats)
