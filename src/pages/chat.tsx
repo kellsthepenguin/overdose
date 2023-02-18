@@ -44,7 +44,6 @@ export default function Chat() {
 }
 
 const AfterEarlyReturn = ({ data }: { data: any }) => {
-  const isFirstRender = useRef(true)
   const [currentChatProfileElement, setCurrentChatProfileElement] =
     useState<HTMLDivElement | null>(null)
   const [isOpened, setIsOpened] = useState(true)
@@ -63,11 +62,6 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
   }
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-
     const friends = data.seconds as User[]
     const childrens = Array.from(
       document.getElementsByClassName('chat-profile')
