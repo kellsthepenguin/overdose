@@ -45,11 +45,10 @@ export default function Chat() {
 
 const AfterEarlyReturn = ({ data }: { data: any }) => {
   const isFirstRender = useRef(true)
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null)
   const [currentChatProfileElement, setCurrentChatProfileElement] =
     useState<HTMLDivElement | null>(null)
   const [isOpened, setIsOpened] = useState(true)
-  const [publicKey, setPublicKey] = useState<Buffer | null>(null)
+  const [currentFriend, setCurrentFriend] = useState<User | null>(null)
   const chatProfiles: JSX.Element[] = []
 
   if (typeof window !== 'undefined') {
@@ -74,16 +73,16 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
       document.getElementsByClassName('chat-profile')
     )
     const profileElem = childrens.find(
-      (elem) => elem.getAttribute('data-id') === currentChatId
+      (elem) => elem.getAttribute('data-id') === currentFriend?.id
     )
 
     currentChatProfileElement?.classList.remove('bg-gray-100')
     profileElem?.classList.add('bg-gray-100')
     setCurrentChatProfileElement(profileElem as HTMLDivElement)
-    const friend = friends.find((user) => user.id === currentChatId)!
+    const friend = friends.find((user) => user.id === currentFriend?.id)!
     if (friend === undefined) return
-    setPublicKey(Buffer.from(friend.encodedPublicKey, 'base64'))
-  }, [currentChatId])
+    setCurrentFriend(friend)
+  }, [currentFriend])
 
   const friends = data.seconds as User[]
 
@@ -92,7 +91,7 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
       <ChatProfile
         name={user.name}
         id={user.id}
-        onClick={() => setCurrentChatId(user.id)}
+        onClick={() => setCurrentFriend(user)}
         key={user.id}
       />
     )
@@ -117,7 +116,10 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
           {chatProfiles}
         </div>
         <div className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'>
-          <ChatInput name='John Doe' id='johndoe123' />
+          <ChatInput
+            name={currentFriend?.name ? currentFriend?.name : ''}
+            id={currentFriend?.id ? currentFriend?.id : '...'}
+          />
           <Bubble date='오전 7:21' name='John Doe' text='Hello World!' />
           <div
             className={`absolute bottom-[calc(var(--vh)-95px)] left-4 sm:hidden ${
