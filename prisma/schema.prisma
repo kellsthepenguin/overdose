@@ -22,8 +22,8 @@ model User {
 
 model Relations {
   id       Int    @unique @default(autoincrement())
-  firstId  String @unique
+  firstId  String
   first    User   @relation("first", fields: [firstId], references: [id])
-  secondId String @unique
+  secondId String
   second   User   @relation("second", fields: [secondId], references: [id])
 }
