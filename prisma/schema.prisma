@@ -18,6 +18,8 @@ model User {
   encodedPublicKey String
   firsts           Relations[] @relation("first")
   seconds          Relations[] @relation("second")
+  authoredChats    Chats[]     @relation("authoredChats")
+  receivedChats    Chats[]     @relation("receivedChats")
 }
 
 model Relations {
@@ -26,4 +28,14 @@ model Relations {
   first    User   @relation("first", fields: [firstId], references: [id])
   secondId String
   second   User   @relation("second", fields: [secondId], references: [id])
+}
+
+model Chats {
+  id         Int      @unique @default(autoincrement())
+  authorId   String
+  author     User     @relation("authoredChats", fields: [authorId], references: [id])
+  receiverId String
+  receiver   User     @relation("receivedChats", fields: [receiverId], references: [id])
+  date       DateTime @default(now())
+  text       String
 }
