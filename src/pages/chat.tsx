@@ -2,16 +2,28 @@ import ChatProfile from '@/components/ChatProfile'
 import Topbar from '@/components/TopBar'
 import Bubble from '@/components/Bubble'
 import useSWR from 'swr'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import ChatInput from '@/components/ChatInput'
 import { Buffer } from 'buffer'
+import eccrypto from 'eccrypto'
+import { nanoid } from 'nanoid'
+import useSyncState from '@/util/useSyncState'
 
-interface User {
+interface IUser {
   id: string
   name: string
   encodedPublicKey: string
+}
+
+interface IChat {
+  authorId: string
+  date: string
+  author: {
+    name: string
+  }
+  text: string
 }
 
 const fetcher = (url: string, token: string) =>
@@ -47,8 +59,9 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
   const [currentChatProfileElement, setCurrentChatProfileElement] =
     useState<HTMLDivElement | null>(null)
   const [isOpened, setIsOpened] = useState(true)
-  const [currentFriend, setCurrentFriend] = useState<User | null>(null)
+  const [currentFriend, setCurrentFriend] = useState<IUser | null>(null)
   const chatProfiles: JSX.Element[] = []
+  const [getChatElements, setChatElements] = useSyncState<JSX.Element[]>([])
 
   if (typeof window !== 'undefined') {
     const setVh = () => {
@@ -62,7 +75,7 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
   }
 
   useEffect(() => {
-    const friends = data.seconds as User[]
+    const friends = data.seconds as IUser[]
     const childrens = Array.from(
       document.getElementsByClassName('chat-profile')
     )
@@ -76,9 +89,39 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
     const friend = friends.find((user) => user.id === currentFriend?.id)!
     if (friend === undefined) return
     setCurrentFriend(friend)
+    fetch('/api/chats/' + friend.id, {
+      headers: {
+        Authorization: localStorage.getItem('token')!,
+      },
+    })
+      .then((res) => res.json())
+      .then((chats: IChat[]) => {
+        setChatElements([])
+        chats.forEach((chat) => {
+          const privateKey = Buffer.from(
+            localStorage.getItem('encodedPrivateKey')!,
+            'base64'
+          )
+          const ecies = JSON.parse(Buffer.from(chat.text, 'base64').toString())
+          Object.keys(ecies).forEach((key) => {
+            ecies[key] = Buffer.from(ecies[key].data)
+          })
+          eccrypto.decrypt(privateKey, ecies).then((buff) => {
+            setChatElements([
+              ...getChatElements(),
+              <Bubble
+                date={new Date(Date.parse(chat.date)).toLocaleDateString()}
+                name={chat.author.name}
+                text={buff.toString()}
+                key={nanoid()}
+              />,
+            ])
+          })
+        })
+      })
   }, [currentFriend])
 
-  const friends = data.seconds as User[]
+  const friends = data.seconds as IUser[]
 
   friends.forEach((user) => {
     chatProfiles.push(
@@ -96,9 +139,10 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
       <Topbar />
       <div className='flex'>
         <div
-          className={`flex flex-col h-[calc(var(--vh)-64px)] w-80 border-r-2 overflow-scroll ${
+          className={`self-start flex-col h-[calc(var(--vh)-64px)] w-80 border-r-2 overflow-scroll ${
             !isOpened ? 'hidden' : ''
           }`}
+          id='profiles'
         >
           <div className='sm:hidden py-2 pl-4 sticky self-start top-0 bg-white w-[100%] border-b-2'>
             <FontAwesomeIcon
@@ -109,21 +153,32 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
           </div>
           {chatProfiles}
         </div>
-        <div className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'>
-          <ChatInput
-            name={currentFriend?.name ? currentFriend?.name : ''}
-            id={currentFriend?.id ? currentFriend?.id : '...'}
-          />
-          <Bubble date='오전 7:21' name='John Doe' text='Hello World!' />
-          <div
-            className={`absolute bottom-[calc(var(--vh)-95px)] left-4 sm:hidden ${
-              isOpened ? 'hidden' : ''
-            }`}
-            onClick={() => setIsOpened(true)}
-          >
-            <FontAwesomeIcon icon={faUserGroup} />
-          </div>
-        </div>
+        {currentFriend && (
+          <>
+            <div className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'>
+              <ChatInput name={currentFriend.name} id={currentFriend.id} />
+              {getChatElements()}
+              <div className='sm:hidden absolute bottom-[calc(var(--vh)-95px)] w-full bg-white h-7 mb-[3px]'>
+                <div
+                  className={`absolute bottom-[calc(var(--vh)-95px)] left-4 ${
+                    isOpened ? 'hidden' : ''
+                  }`}
+                  onClick={() => setIsOpened(true)}
+                >
+                  <FontAwesomeIcon icon={faUserGroup} />
+                </div>
+              </div>
+              <div
+                className={`absolute bottom-[calc(var(--vh)-95px)] left-4 sm:hidden ${
+                  isOpened ? 'hidden' : ''
+                }`}
+                onClick={() => setIsOpened(true)}
+              >
+                <FontAwesomeIcon icon={faUserGroup} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
