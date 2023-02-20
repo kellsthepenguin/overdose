@@ -1,5 +1,5 @@
 import prisma from '@/prisma'
-import { verifyJWT } from '@/util'
+import verifyJWT from '@/util/verifyJWT'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 

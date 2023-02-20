@@ -1,4 +1,4 @@
-import { verifyJWT } from '@/util'
+import verifyJWT from '@/util/verifyJWT'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(
