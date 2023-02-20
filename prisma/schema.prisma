@@ -31,11 +31,12 @@ model Relations {
 }
 
 model Chats {
-  id         Int      @unique @default(autoincrement())
-  authorId   String
-  author     User     @relation("authoredChats", fields: [authorId], references: [id])
-  receiverId String
-  receiver   User     @relation("receivedChats", fields: [receiverId], references: [id])
-  date       DateTime @default(now())
-  text       String
+  id            Int      @unique @default(autoincrement())
+  authorId      String
+  author        User     @relation("authoredChats", fields: [authorId], references: [id])
+  receiverId    String
+  receiver      User     @relation("receivedChats", fields: [receiverId], references: [id])
+  date          DateTime @default(now())
+  text          String
+  textForSender String
 }

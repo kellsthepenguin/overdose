@@ -10,6 +10,7 @@ import { Buffer } from 'buffer'
 import eccrypto from 'eccrypto'
 import { nanoid } from 'nanoid'
 import useSyncState from '@/util/useSyncState'
+import { decode } from 'punycode'
 
 interface IUser {
   id: string
@@ -24,6 +25,7 @@ interface IChat {
     name: string
   }
   text: string
+  textForSender: string
 }
 
 const fetcher = (url: string, token: string) =>
@@ -102,7 +104,19 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
             localStorage.getItem('encodedPrivateKey')!,
             'base64'
           )
-          const ecies = JSON.parse(Buffer.from(chat.text, 'base64').toString())
+          const ecies = JSON.parse(
+            Buffer.from(
+              chat.authorId ===
+                JSON.parse(
+                  Buffer.from(
+                    localStorage.getItem('token')?.split('.')[1] as string,
+                    'base64'
+                  ).toString('utf-8')
+                ).id
+                ? Buffer.from(chat.textForSender, 'base64').toString()
+                : Buffer.from(chat.text, 'base64').toString()
+            ).toString()
+          )
           Object.keys(ecies).forEach((key) => {
             ecies[key] = Buffer.from(ecies[key].data)
           })

@@ -31,9 +31,10 @@ export default async function handler(
 
     res.json(chats)
   } else if (req.method === 'POST') {
-    const { text } = req.body
+    const { text, textForSender } = req.body
 
-    if (!text) return res.json({ ok: false, error: 'invalid body' })
+    if (!text || !textForSender)
+      return res.json({ ok: false, error: 'invalid body' })
     if (myId === targetId)
       return res.json({ ok: false, error: 'cannot send message to self' })
 
@@ -42,6 +43,7 @@ export default async function handler(
         authorId: myId,
         receiverId: targetId,
         text,
+        textForSender,
       },
     })
 
