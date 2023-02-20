@@ -10,7 +10,6 @@ import { Buffer } from 'buffer'
 import eccrypto from 'eccrypto'
 import { nanoid } from 'nanoid'
 import useSyncState from '@/util/useSyncState'
-import { decode } from 'punycode'
 
 interface IUser {
   id: string
