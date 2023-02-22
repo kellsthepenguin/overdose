@@ -10,21 +10,12 @@ import { Buffer } from 'buffer'
 import eccrypto from 'eccrypto'
 import { nanoid } from 'nanoid'
 import useSyncState from '@/util/useSyncState'
+import fetchDecryptedChats from '@/chats/fetchDecryptedChats'
 
 interface IUser {
   id: string
   name: string
   encodedPublicKey: string
-}
-
-interface IChat {
-  authorId: string
-  date: string
-  author: {
-    name: string
-  }
-  text: string
-  textForSender: string
 }
 
 const fetcher = (url: string, token: string) =>
@@ -90,48 +81,20 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
     const friend = friends.find((user) => user.id === currentFriend?.id)!
     if (friend === undefined) return
     setCurrentFriend(friend)
-    fetch('/api/chats/' + friend.id, {
-      headers: {
-        Authorization: localStorage.getItem('token')!,
-      },
-    })
-      .then((res) => res.json())
-      .then((chats: IChat[]) => {
-        setChatElements([])
+    fetchDecryptedChats(localStorage.getItem('token')!, friend.id).then(
+      (chats) => {
         chats.forEach((chat) => {
-          const privateKey = Buffer.from(
-            localStorage.getItem('encodedPrivateKey')!,
-            'base64'
-          )
-          const ecies = JSON.parse(
-            Buffer.from(
-              chat.authorId ===
-                JSON.parse(
-                  Buffer.from(
-                    localStorage.getItem('token')?.split('.')[1] as string,
-                    'base64'
-                  ).toString('utf-8')
-                ).id
-                ? Buffer.from(chat.textForSender, 'base64').toString()
-                : Buffer.from(chat.text, 'base64').toString()
-            ).toString()
-          )
-          Object.keys(ecies).forEach((key) => {
-            ecies[key] = Buffer.from(ecies[key].data)
-          })
-          eccrypto.decrypt(privateKey, ecies).then((buff) => {
-            setChatElements([
-              ...getChatElements(),
-              <Bubble
-                date={new Date(Date.parse(chat.date)).toLocaleDateString()}
-                name={chat.author.name}
-                text={buff.toString()}
-                key={nanoid()}
-              />,
-            ])
-          })
+          setChatElements([
+            ...getChatElements(),
+            <Bubble
+              date={chat.date}
+              name={chat.author.name}
+              text={chat.text}
+            />,
+          ])
         })
-      })
+      }
+    )
   }, [currentFriend])
 
   const friends = data.seconds as IUser[]
