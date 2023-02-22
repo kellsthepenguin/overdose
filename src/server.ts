@@ -2,7 +2,7 @@ import { createServer } from 'http'
 import { parse } from 'url'
 import next from 'next'
 import { Server as IOServer } from 'socket.io'
-import { verifyJWT } from './util'
+import verifyJWT from './util/verifyJWT'
 import jwt from 'jsonwebtoken'
 
 const port = parseInt(process.env.PORT || '3000', 10)
