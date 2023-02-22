@@ -6,11 +6,9 @@ import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import ChatInput from '@/components/ChatInput'
-import { Buffer } from 'buffer'
-import eccrypto from 'eccrypto'
-import { nanoid } from 'nanoid'
 import useSyncState from '@/util/useSyncState'
-import fetchDecryptedChats from '@/chats/fetchDecryptedChats'
+import fetchDecryptedChats from '@/fetch/fetchDecryptedChats'
+import { nanoid } from 'nanoid'
 
 interface IUser {
   id: string
@@ -87,9 +85,13 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
           setChatElements([
             ...getChatElements(),
             <Bubble
-              date={chat.date}
+              date={Intl.DateTimeFormat(navigator.language, {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              }).format(new Date(chat.date))}
               name={chat.author.name}
               text={chat.text}
+              key={nanoid()}
             />,
           ])
         })
