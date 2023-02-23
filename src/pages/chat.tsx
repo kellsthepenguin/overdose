@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import ChatInput from '@/components/ChatInput'
 import useSyncState from '@/util/useSyncState'
-import fetchDecryptedChats from '@/fetch/fetchDecryptedChats'
+import fetchDecryptedChats from '@/functions/fetchDecryptedChats'
 import { nanoid } from 'nanoid'
 
 interface IUser {
