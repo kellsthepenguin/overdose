@@ -17,6 +17,9 @@ export default async function handler(
   if (req.method === 'GET') {
     const chats = await prisma.chats.findMany({
       take: 100,
+      orderBy: {
+        id: 'desc',
+      },
       where: {
         OR: [{ authorId: targetId }, { receiverId: targetId }],
       },
