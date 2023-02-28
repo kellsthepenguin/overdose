@@ -41,15 +41,26 @@ export default async function handler(
     if (myId === targetId)
       return res.json({ ok: false, error: 'cannot send message to self' })
 
-    await prisma.chats.create({
-      data: {
-        authorId: myId,
-        receiverId: targetId,
-        text,
-        textForSender,
-      },
-    })
+    try {
+      const chat = await prisma.chats.create({
+        data: {
+          authorId: myId,
+          receiverId: targetId,
+          text,
+          textForSender,
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      })
 
-    res.json({ ok: true })
+      res.json({ ok: true, chat })
+    } catch (e) {
+      res.json({ ok: false, error: 'db error' })
+    }
   }
 }

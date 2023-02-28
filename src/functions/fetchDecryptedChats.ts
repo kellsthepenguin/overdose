@@ -1,14 +1,5 @@
 import eccrypto from 'eccrypto'
-
-interface IChat {
-  authorId: string
-  date: string
-  author: {
-    name: string
-  }
-  text: string
-  textForSender: string | undefined
-}
+import IChat from '@/types/IChat'
 
 export default async function fetchDecryptedChats(
   token: string,
