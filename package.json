@@ -4,9 +4,9 @@
   "private": true,
   "main": "src/server.ts",
   "scripts": {
-    "dev": "ts-node .",
+    "dev": "next dev",
     "build": "next build && yarn genkey && prisma db push",
-    "start": "NODE_ENV=production ts-node .",
+    "start": "next start",
     "genkey": "node -e \"import('nanoid').then(({ nanoid }) => require('fs').writeFileSync('private.key', nanoid(2048)))\""
   },
   "dependencies": {
