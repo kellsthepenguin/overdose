@@ -157,7 +157,7 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
                   key={nanoid()}
                 />
               ))}
-              <div className='sm:hidden absolute bottom-[calc(var(--vh)-95px)] w-full bg-white h-7 mb-[3px]'>
+              <div className='sm:hidden absolute bottom-[calc(var(--vh)-95px)] w-full bg-white h-8 mb-[3px] flex items-center'>
                 <div
                   className={`bottom-[calc(var(--vh)-95px)] ml-[16px] mt-[8px] sm:hidden z-50 ${
                     isOpened ? 'hidden' : ''
