@@ -12,6 +12,8 @@ import IUser from '@/types/IUser'
 import sendMessage from '@/functions/sendMessage'
 import IChat from '@/types/IChat'
 import ScrollToBottom from 'react-scroll-to-bottom'
+import { io } from 'socket.io-client'
+import decryptChat from '@/functions/decryptChat'
 
 const fetcher = (url: string, token: string) =>
   fetch(url, {
@@ -53,6 +55,20 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
   const [chats, setChats] = useState<IChat[]>([])
   const chatInput = useRef<HTMLInputElement>(null)
   const token = localStorage.getItem('token')!
+
+  useEffect(() => {
+    const socket = io({
+      path: '/api/socket.io',
+      extraHeaders: {
+        authorization: token,
+      },
+    })
+
+    socket.on('msg', async (chat) => {
+      const decryptedChat = await decryptChat(chat)
+      setChats((chats) => [...chats, decryptedChat])
+    })
+  }, [])
 
   if (typeof window !== 'undefined') {
     const setVh = () => {

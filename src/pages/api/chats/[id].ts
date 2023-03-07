@@ -1,12 +1,14 @@
 import prisma from '@/prisma'
 import verifyJWT from '../../../util/verifyJWT'
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest } from 'next'
 import jwt from 'jsonwebtoken'
+import NextApiResponseWithIO from '@/types/NextApiResponseWithIo'
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponseWithIO
 ) {
+  const { io, socketIds } = res.socket.server
   const { authorization: token } = req.headers as { authorization: string }
   const isValid = verifyJWT(token)
   const { id: targetId } = req.query as { id: string }
@@ -40,9 +42,22 @@ export default async function handler(
       return res.json({ ok: false, error: 'invalid body' })
     if (myId === targetId)
       return res.json({ ok: false, error: 'cannot send message to self' })
+    const relation = await prisma.relations.findFirst({
+      where: {
+        firstId: myId,
+        secondId: targetId,
+      },
+    })
+
+    if (!relation) {
+      return res.json({
+        ok: false,
+        error: "you don't have relation with target",
+      })
+    }
 
     try {
-      const chat = await prisma.chats.create({
+      const chat = (await prisma.chats.create({
         data: {
           authorId: myId,
           receiverId: targetId,
@@ -56,8 +71,14 @@ export default async function handler(
             },
           },
         },
-      })
+      })) as any
 
+      const targetSocket = io.sockets.sockets.get(socketIds.get(targetId)!)
+      delete chat.textForSender
+
+      if (targetSocket) {
+        targetSocket.emit('msg', chat)
+      }
       res.json({ ok: true, chat })
     } catch (e) {
       res.json({ ok: false, error: 'db error' })
