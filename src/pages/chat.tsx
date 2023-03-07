@@ -152,7 +152,10 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
         </div>
         {currentFriend && (
           <>
-            <ScrollToBottom className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'>
+            <ScrollToBottom
+              className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'
+              scrollViewClassName='grid'
+            >
               {chats.map((chat) => (
                 <Bubble
                   date={Intl.DateTimeFormat(navigator.language, {

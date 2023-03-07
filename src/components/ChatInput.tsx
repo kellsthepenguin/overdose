@@ -27,7 +27,7 @@ export default function ChatInput({
   }
 
   return (
-    <div className='p-5 flex gap-2 items-center w-full'>
+    <div className='sticky self-start p-5 flex gap-2 items-center w-full bottom-0 bg-white'>
       <Input
         placeholder={`Send chat to ${name}(${id})`}
         type='text'
