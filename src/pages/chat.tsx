@@ -1,7 +1,6 @@
 import ChatProfile from '@/components/ChatProfile'
 import Topbar from '@/components/TopBar'
 import Bubble from '@/components/Bubble'
-import useSWR from 'swr'
 import { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faUserGroup } from '@fortawesome/free-solid-svg-icons'
@@ -14,19 +13,10 @@ import IChat from '@/types/IChat'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import { io } from 'socket.io-client'
 import decryptChat from '@/functions/decryptChat'
-
-const fetcher = (url: string, token: string) =>
-  fetch(url, {
-    headers: {
-      Authorization: token,
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => res.json())
+import useRelations from '@/hooks/useRelations'
 
 export default function Chat() {
-  const { data, error, isLoading } = useSWR('/api/relations', (url) =>
-    fetcher(url, localStorage.getItem('token')!)
-  )
+  const { data, error, isLoading } = useRelations()
 
   if (error) {
     console.log(error)
