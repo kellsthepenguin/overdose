@@ -3,7 +3,11 @@ import Topbar from '@/components/TopBar'
 import Bubble from '@/components/Bubble'
 import { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import {
+  faAdd,
+  faArrowLeft,
+  faUserGroup,
+} from '@fortawesome/free-solid-svg-icons'
 import ChatInput from '@/components/ChatInput'
 import fetchDecryptedChats from '@/functions/fetchDecryptedChats'
 import { nanoid } from 'nanoid'
@@ -108,6 +112,26 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
     })
   }
 
+  const showAddFriendDialog = async () => {
+    const friendId = prompt('추가할 아이디를 입력해주세요')
+    const result = await (
+      await fetch('/api/relations', {
+        method: 'POST',
+        body: JSON.stringify({ secondId: friendId }),
+        headers: {
+          Authorization: token,
+          'Content-Type': 'application/json',
+        },
+      })
+    ).json()
+
+    if (result.ok) {
+      alert('성공적으로 친구를 추가했습니다.')
+    } else {
+      alert(result.error)
+    }
+  }
+
   const friends = data.seconds as IUser[]
 
   friends.forEach((user) => {
@@ -131,11 +155,17 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
           }`}
           id='profiles'
         >
-          <div className='sm:hidden py-2 pl-4 sticky self-start top-0 bg-white w-[100%] border-b-2'>
+          <div className='py-2 pl-4 sticky self-start top-0 bg-white w-[100%] border-b-2 flex'>
             <FontAwesomeIcon
               icon={faArrowLeft}
               size='xl'
               onClick={() => setIsOpened(false)}
+            />
+            <FontAwesomeIcon
+              className='ml-auto mr-2'
+              icon={faAdd}
+              size='xl'
+              onClick={showAddFriendDialog}
             />
           </div>
           {chatProfiles}
@@ -157,9 +187,9 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
                   key={nanoid()}
                 />
               ))}
-              <div className='sm:hidden absolute bottom-[calc(var(--vh)-95px)] w-full bg-white h-8 mb-[3px] flex items-center'>
+              <div className='absolute bottom-[calc(var(--vh)-95px)] w-full bg-white h-8 mb-[3px] flex items-center'>
                 <div
-                  className={`bottom-[calc(var(--vh)-95px)] ml-[16px] mt-[8px] sm:hidden z-50 ${
+                  className={`bottom-[calc(var(--vh)-95px)] ml-[16px] mt-[8px] z-50 ${
                     isOpened ? 'hidden' : ''
                   }`}
                   onClick={() => setIsOpened(true)}
