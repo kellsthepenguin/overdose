@@ -2,7 +2,7 @@ import prisma from '@/prisma'
 import verifyJWT from '../../../util/verifyJWT'
 import type { NextApiRequest } from 'next'
 import jwt from 'jsonwebtoken'
-import NextApiResponseWithIO from '@/types/NextApiResponseWithIo'
+import NextApiResponseWithIO from '@/types/NextApiResponseWithIO'
 
 export default async function handler(
   req: NextApiRequest,

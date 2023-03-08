@@ -1,7 +1,7 @@
 import type { NextApiRequest } from 'next'
 import jwt from 'jsonwebtoken'
 import verifyJWT from '@/util/verifyJWT'
-import NextApiResponseWithIO from '@/types/NextApiResponseWithIo'
+import NextApiResponseWithIO from '@/types/NextApiResponseWithIO'
 import { Server as IOServer } from 'socket.io'
 import NetServerWithIO from '@/types/NetServerWithIO'
 
