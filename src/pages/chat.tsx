@@ -114,6 +114,7 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
 
   const showAddFriendDialog = async () => {
     const friendId = prompt('추가할 아이디를 입력해주세요')
+    if (!friendId) return
     const result = await (
       await fetch('/api/relations', {
         method: 'POST',
