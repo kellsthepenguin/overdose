@@ -26,7 +26,7 @@ export default function Login() {
           localStorage.setItem('token', result.token)
           location.href = '/chat'
         } else {
-          alert('계정 생성에 실패했습니다. 오류: ' + result.error)
+          alert('로그인에 실패했습니다. 오류: ' + result.error)
         }
       })
   }
