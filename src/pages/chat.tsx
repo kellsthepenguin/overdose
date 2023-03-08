@@ -175,6 +175,7 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
             <ScrollToBottom
               className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'
               scrollViewClassName='grid'
+              followButtonClassName='hidden'
             >
               {chats.map((chat) => (
                 <Bubble
