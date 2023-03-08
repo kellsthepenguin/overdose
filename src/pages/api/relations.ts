@@ -33,6 +33,7 @@ export default async function handler(
     res.json({ ok: true, seconds })
   } else if (req.method === 'POST') {
     const { secondId } = req.body
+    if (!secondId) return res.json({ ok: false, error: 'invalid body' })
     const second = await prisma.user.findUnique({
       where: {
         id: secondId,
