@@ -10,7 +10,21 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id, pw } = req.body
+  const { id, pw, captcha } = req.body
+  const captchaResult = await (
+    await fetch('https://hcaptcha.com/siteverify', {
+      method: 'POST',
+      body: new URLSearchParams({
+        response: captcha,
+        secret: process.env.HCAPTCHA_SECRET_KEY!,
+      }),
+    })
+  ).json()
+
+  if (!captchaResult.success) {
+    res.json({ ok: false, error: 'invalid captcha' })
+  }
+
   const user = await prisma.user.findUnique({
     where: {
       id,

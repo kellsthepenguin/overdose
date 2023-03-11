@@ -12,18 +12,33 @@ export default async function handler(
     id,
     pw,
     name,
+    captcha,
     encodedPublicKey,
   }: {
     id: string
     pw: string
     name: string
+    captcha: string
     encodedPublicKey: string
   } = req.body
   const salt = nanoid(128)
 
-  if (id && pw && name) {
+  if (id && pw && name && captcha) {
     const idRegexp = /^\w+$/
     const pwRegexp = /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/
+    const captchaResult = await (
+      await fetch('https://hcaptcha.com/siteverify', {
+        method: 'POST',
+        body: new URLSearchParams({
+          response: captcha,
+          secret: process.env.HCAPTCHA_SECRET_KEY!,
+        }),
+      })
+    ).json()
+
+    if (!captchaResult.success) {
+      return res.json({ ok: false, error: 'invalid captcha' })
+    }
 
     if (!id.match(idRegexp) || !pw.match(pwRegexp)) {
       return res.json({ ok: false, error: 'invalid id or pw' })

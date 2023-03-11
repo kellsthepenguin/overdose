@@ -2,19 +2,22 @@ import Center from '@/components/Center'
 import Input from '@/components/Input'
 import PrimaryButton from '@/components/PrimaryButton'
 import Topbar from '@/components/TopBar'
-import { useRef } from 'react'
+import HCaptcha from '@hcaptcha/react-hcaptcha'
+import { FormEvent, useRef, useState } from 'react'
 
 export default function Login() {
   const idRef = useRef<HTMLInputElement>(null)
   const pwRef = useRef<HTMLInputElement>(null)
+  const [captcha, setCaptcha] = useState('')
 
-  const handleLogin = () => {
+  const handleLogin = (e: FormEvent) => {
+    e.preventDefault() // prevent from browser refreshing page
     const id = idRef.current?.value
     const pw = pwRef.current?.value
 
     fetch('/api/token', {
       method: 'POST',
-      body: JSON.stringify({ id, pw }),
+      body: JSON.stringify({ id, pw, captcha }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -36,16 +39,22 @@ export default function Login() {
       <Topbar />
       <Center>
         <div className='px-[8vw] sm:px-[16vw] py-[calc(24vh-64px)] bg-slate-100 rounded-md'>
-          <p>아이디</p>
-          <Input innerRef={idRef} placeholder='dandelions' type='text' />
-          <p>비밀번호</p>
-          <Input
-            className='mb-2'
-            innerRef={pwRef}
-            placeholder='PaSs!w$0%^d&'
-            type='password'
-          />
-          <PrimaryButton onClick={handleLogin}>로그인</PrimaryButton>
+          <form onSubmit={handleLogin} id='login'>
+            <p>아이디</p>
+            <Input innerRef={idRef} placeholder='dandelions' type='text' />
+            <p>비밀번호</p>
+            <Input
+              className='mb-2'
+              innerRef={pwRef}
+              placeholder='PaSs!w$0%^d&'
+              type='password'
+            />
+            <HCaptcha
+              sitekey='5b7cce4c-90dc-4340-8280-6bdcb05d4578'
+              onVerify={(token) => setCaptcha(token)}
+            />
+            <PrimaryButton form='login'>로그인</PrimaryButton>
+          </form>
         </div>
       </Center>
     </div>
