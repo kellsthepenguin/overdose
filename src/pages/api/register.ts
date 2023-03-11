@@ -36,8 +36,6 @@ export default async function handler(
       })
     ).json()
 
-    console.log(captchaResult, process.env.HCAPTCHA_SECRET_KEY)
-
     if (!captchaResult.success) {
       return res.json({ ok: false, error: 'invalid captcha' })
     }
