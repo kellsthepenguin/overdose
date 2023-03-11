@@ -156,7 +156,7 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
           }`}
           id='profiles'
         >
-          <div className='py-2 pl-4 sticky self-start top-0 bg-white w-[100%] border-b-2 flex'>
+          <div className='py-2 pl-4 sticky self-start top-0 bg-white w-[100vw-320px] border-b-2 flex'>
             <FontAwesomeIcon
               icon={faArrowLeft}
               size='xl'
@@ -173,25 +173,10 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
         </div>
         {currentFriend && (
           <>
-            <ScrollToBottom
-              className='flex flex-col-reverse h-[calc(var(--vh)-64px)] w-screen overflow-scroll'
-              scrollViewClassName='grid'
-              followButtonClassName='hidden'
-            >
-              {chats.map((chat) => (
-                <Bubble
-                  date={Intl.DateTimeFormat(navigator.language, {
-                    dateStyle: 'medium',
-                    timeStyle: 'short',
-                  }).format(new Date(chat.date))}
-                  name={chat.author.name}
-                  text={chat.text}
-                  key={nanoid()}
-                />
-              ))}
-              <div className='absolute bottom-[calc(var(--vh)-95px)] w-full bg-white h-8 mb-[3px] flex items-center'>
+            <div className='flex flex-col flex-1 h-[calc(var(--vh)-64px)] w-[100vw-320px]'>
+              <div className='absolute bottom-[calc(var(--vh)-95px)] w-[100vw-320px] bg-white h-8 mb-[3px] flex items-center'>
                 <div
-                  className={`bottom-[calc(var(--vh)-95px)] ml-[16px] mt-[8px] z-50 ${
+                  className={`bottom-[calc(var(--vh)-95px)] ml-[16px] mt-[8px] ${
                     isOpened ? 'hidden' : ''
                   }`}
                   onClick={() => setIsOpened(true)}
@@ -199,13 +184,29 @@ const AfterEarlyReturn = ({ data }: { data: any }) => {
                   <FontAwesomeIcon icon={faUserGroup} />
                 </div>
               </div>
+              <div className='h-[calc(100vh-148px)] flex justify-end flex-col'>
+                <Bubble date={''} name={''} text={''} key={nanoid()} />
+                <ScrollToBottom className='mt-auto overflow-scroll'>
+                  {chats.map((chat) => (
+                    <Bubble
+                      date={Intl.DateTimeFormat(navigator.language, {
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                      }).format(new Date(chat.date))}
+                      name={chat.author.name}
+                      text={chat.text}
+                      key={nanoid()}
+                    />
+                  ))}
+                </ScrollToBottom>
+              </div>
               <ChatInput
                 name={currentFriend.name}
                 id={currentFriend.id}
                 innerRef={chatInput}
                 onSendTriggered={onSendTriggered}
               />
-            </ScrollToBottom>
+            </div>
           </>
         )}
       </div>
