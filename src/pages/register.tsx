@@ -10,6 +10,7 @@ export default function Register() {
   const nameRef = useRef<HTMLInputElement>(null)
   const idRef = useRef<HTMLInputElement>(null)
   const pwRef = useRef<HTMLInputElement>(null)
+  const agreeRef = useRef<HTMLInputElement>(null)
   const [captcha, setCaptcha] = useState('')
 
   const handleRegister = (e: FormEvent) => {
@@ -17,11 +18,17 @@ export default function Register() {
     const name = nameRef.current?.value
     const id = idRef.current?.value
     const pw = pwRef.current?.value
+    const isAgreed = agreeRef.current?.checked
 
     const privateKey = eccrypto.generatePrivate()
     const publicKey = eccrypto.getPublic(privateKey)
     const encodedPrivateKey = privateKey.toString('base64')
     const encodedPublicKey = publicKey.toString('base64')
+
+    if (!isAgreed) {
+      alert('You should agree to privacy policy.')
+      return
+    }
 
     if (!captcha) {
       alert('Invalid captcha')
@@ -59,11 +66,22 @@ export default function Register() {
             <Input innerRef={idRef} placeholder='dandelions' type='text' />
             <p>비밀번호</p>
             <Input
-              className='mb-2'
               innerRef={pwRef}
               placeholder='PaSs!w$0%^d&'
               type='password'
             />
+            <Input
+              className='inline mr-2'
+              innerRef={agreeRef}
+              id='agree'
+              type='checkbox'
+            />
+            <label htmlFor='agree' className='inline'>
+              I agree{' '}
+              <a href='/policy' className='text-blue-600 inline'>
+                Privacy Policy
+              </a>
+            </label>
             <HCaptcha
               sitekey='5b7cce4c-90dc-4340-8280-6bdcb05d4578'
               onVerify={(token) => setCaptcha(token)}
