@@ -78,9 +78,17 @@ export default function Register() {
             />
             <label htmlFor='agree' className='inline'>
               I agree{' '}
-              <a href='/policy' className='text-blue-600 inline'>
+              <p
+                onClick={() =>
+                  window.open(
+                    'https://overdos3.notion.site/Privacy-Policy-f33c07f947c147aca847aef9c0a19158',
+                    '_blank'
+                  )
+                }
+                className='text-blue-600 inline cursor-pointer'
+              >
                 Privacy Policy
-              </a>
+              </p>
             </label>
             <HCaptcha
               sitekey='5b7cce4c-90dc-4340-8280-6bdcb05d4578'
